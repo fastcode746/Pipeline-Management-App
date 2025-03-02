@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Login from './components/auth/Login';
+import Login from "./components/auth/login";
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Admin Components
