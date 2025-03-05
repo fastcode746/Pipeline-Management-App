@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ListItemAvatar, Avatar } from '@mui/material';
 import { 
   Box, 
   Typography, 
@@ -40,7 +41,7 @@ import {
   Alert, 
   LinearProgress, 
   InputAdornment,
-  Avatar
+  
 } from '@mui/material';
 import {
   Plumbing as PlumbingIcon,
@@ -60,6 +61,59 @@ import {
 import { AuthContext } from '../../contexts/AuthContext';
 import { NotificationContext } from '../../contexts/NotificationContext';
 import { getAllAnalysisRecords } from '../../services/modelService';
+
+const PIPE_TYPES = {
+  "Carbon Steel": {
+    name: "Carbon Steel",
+    image: "/src/assets/images/1.png",
+    description: "Most commonly used for main pipeline systems. Pressure range: 50-100+ bar. Features high pressure tolerance and good heat resistance."
+  },
+  "Stainless Steel": {
+    name: "Stainless Steel",
+    image: "/src/assets/images/2.png",
+    description: "Used for transporting corrosive substances. Pressure range: 50-100 bar. Excellent corrosion resistance but more expensive."
+  },
+  "Alloy Steel": {
+    name: "Alloy Steel",
+    image: "/src/assets/images/3.png",
+    description: "Designed for high pressure and high-temperature applications. Pressure range: 70-100+ bar. Combines strength with corrosion resistance."
+  },
+  "Fiberglass Reinforced Plastic": {
+    name: "Fiberglass Reinforced Plastic (FRP)",
+    image: "/src/assets/images/4.png",
+    description: "Used for transporting chemicals and gases. Pressure range: 50-70 bar. Lightweight and corrosion-resistant."
+  },
+  "High-Density Polyethylene": {
+    name: "High-Density Polyethylene (HDPE)",
+    image: "/src/assets/images/5.png",
+    description: "Suitable for gas pipelines under low to medium pressure. Pressure range: 50-60 bar. Flexible and corrosion-resistant but less strong for higher pressures."
+  },
+  "Plastic-Lined": {
+    name: "Plastic-Lined",
+    image: "/src/assets/images/6.png",
+    description: "For transporting corrosive substances. Pressure range: 50-80 bar. Internal corrosion resistance with a strong metallic outer structure."
+  },
+  "Ductile Iron": {
+    name: "Ductile Iron",
+    image: "/src/assets/images/7.png",
+    description: "Used for fluid transport under medium pressure. Pressure range: 50-90 bar. High strength and good pressure tolerance."
+  },
+  "Galvanized Steel": {
+    name: "Galvanized Steel",
+    image: "/src/assets/images/8.png",
+    description: "For transporting water or oil in tough conditions. Pressure range: 50-70 bar. Corrosion-resistant due to galvanized coating."
+  },
+  "Glass Reinforced Epoxy": {
+    name: "Glass Reinforced Epoxy (GRE)",
+    image: "/src/assets/images/9.png",
+    description: "For transporting substances under medium pressure. Pressure range: 50-80 bar. Lightweight and easy to install."
+  },
+  "Low Temperature Carbon Steel": {
+    name: "Low Temperature Carbon Steel (LTCS)",
+    image: "/src/assets/images/10.png",
+    description: "Suitable for desert climates with cold nighttime temperatures. Pressure range: 50-100+ bar. High pressure tolerance and good performance in low temperatures."
+  }
+};
 
 const PipeRecommendations = () => {
   const [tabValue, setTabValue] = useState(0);
@@ -88,19 +142,13 @@ const PipeRecommendations = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Load data when component mounts
   useEffect(() => {
     if (location.state?.createNew) {
       handleCreateNew();
     }
-    loadData();
-  }, [location]);
-
-  const loadData = async () => {
-    logActivity('navigation', 'accessed Pipe Recommendations');
-    loadRecommendations();
+    loadRecommendations(); // Add this line if not already present
     loadSharedAnalyses();
-  };
+  }, [location]);
 
   const loadRecommendations = () => {
     try {
@@ -113,7 +161,6 @@ const PipeRecommendations = () => {
       setRecommendations([]);
     }
   };
-
   const loadSharedAnalyses = () => {
     try {
       const analyses = getAllAnalysisRecords()
@@ -166,11 +213,52 @@ const PipeRecommendations = () => {
       setTabValue(0);
     }
   };
+  const handleSaveRecommendation = () => {
+    if (validateForm()) {
+      const newRecommendation = {
+        id: Date.now(),
+        title: `${selectedAnalysis.title} - ${formData.recommendationType} Recommendation`,
+        analysis: selectedAnalysis,
+        recommendationType: formData.recommendationType,
+        justification: formData.justification,
+        concerns: formData.concerns,
+        status: 'draft',
+        timestamp: '2025-03-05 15:54:05', // Using the provided current date/time
+        createdBy: 'fastcode746' // Using the provided username
+      };
+  
+      let updatedRecommendations;
+      if (editMode && selectedRecommendation) {
+        updatedRecommendations = recommendations.map(rec =>
+          rec.id === selectedRecommendation.id ? { ...rec, ...newRecommendation } : rec
+        );
+      } else {
+        updatedRecommendations = [...recommendations, newRecommendation];
+      }
+  
+      // Save to local storage
+      localStorage.setItem('pipeRecommendations', JSON.stringify(updatedRecommendations));
+      setRecommendations(updatedRecommendations);
+      
+      sendNotification({
+        type: 'success',
+        message: `Recommendation ${editMode ? 'updated' : 'created'} successfully!`
+      });
+  
+      setCreateMode(false);
+      setEditMode(false);
+      setTabValue(0);
+    }
+  };
+  
 
+  
   const handleSubmit = () => {
     if (validateForm()) {
-      setSubmitDialogOpen(true);
+      handleSaveRecommendation();
+      setSubmitDialogOpen(false); // Close the dialog after saving
     }
+
   };
 
   const validateForm = () => {
@@ -353,21 +441,35 @@ const PipeRecommendations = () => {
             </Typography>
             
             <FormControl fullWidth sx={{ mb: 3 }}>
-              <InputLabel>Pipe Type Recommendation</InputLabel>
-              <Select
-                value={formData.recommendationType}
-                onChange={(e) => setFormData({ ...formData, recommendationType: e.target.value })}
-                label="Pipe Type Recommendation"
-                error={Boolean(errors.recommendationType)}
-              >
-                <MenuItem value="Cast Iron">Cast Iron</MenuItem>
-                <MenuItem value="PVC">PVC</MenuItem>
-                <MenuItem value="Stainless Steel">Stainless Steel</MenuItem>
-              </Select>
-              {errors.recommendationType && (
-                <FormHelperText error>{errors.recommendationType}</FormHelperText>
-              )}
-            </FormControl>
+  <InputLabel>Pipe Type Recommendation</InputLabel>
+  <Select
+    value={formData.recommendationType}
+    onChange={(e) => setFormData({ ...formData, recommendationType: e.target.value })}
+    label="Pipe Type Recommendation"
+    error={Boolean(errors.recommendationType)}
+  >
+    {Object.entries(PIPE_TYPES).map(([type, details]) => (
+      <MenuItem value={type} key={type}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Avatar
+            src={details.image}
+            alt={type}
+            sx={{ width: 40, height: 40 }}
+          />
+          <Box>
+            <Typography variant="subtitle2">{type}</Typography>
+            <Typography variant="caption" color="text.secondary">
+              {details.description}
+            </Typography>
+          </Box>
+        </Box>
+      </MenuItem>
+    ))}
+  </Select>
+  {errors.recommendationType && (
+    <FormHelperText error>{errors.recommendationType}</FormHelperText>
+  )}
+</FormControl>
             
             <TextField
               fullWidth

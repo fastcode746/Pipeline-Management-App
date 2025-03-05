@@ -237,17 +237,40 @@ const DashboardLayout = ({ children }) => {
           </Typography>
 
           <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 0.5 }}
-          >
-            ☎️ 98118708{""}
-          </Typography>
+  variant="h6"
+  noWrap
+  component="a"  // Changed to 'a' component
+  href="tel:98118708"  // Added tel: protocol
+  sx={{ 
+    flexGrow: 0.5,
+    textDecoration: 'none',  // Remove default link underline
+    color: 'inherit',  // Keep original text color
+    cursor: 'pointer',  // Show pointer cursor on hover
+    '&:hover': {
+      textDecoration: 'underline'  // Add underline on hover
+    }
+  }}
+>
+  ☎️ 98118708
+</Typography>
 
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            📩 omaralwa78@gmail.com
-          </Typography>
+<Typography 
+  variant="h6" 
+  noWrap 
+  component="a"  // Changed to 'a' component
+  href="mailto:omaralwa78@gmail.com"  // Added mailto: protocol
+  sx={{ 
+    flexGrow: 1,
+    textDecoration: 'none',  // Remove default link underline
+    color: 'inherit',  // Keep original text color
+    cursor: 'pointer',  // Show pointer cursor on hover
+    '&:hover': {
+      textDecoration: 'underline'  // Add underline on hover
+    }
+  }}
+>
+  📩 omaralwa78@gmail.com
+</Typography>
           {/* Role badge */}
           <Tooltip
             title={`Logged in as ${currentUser?.role}`}
