@@ -115,65 +115,8 @@ const EngineerDashboard = () => {
         },
         filename: 'pipeline_data_001.xlsx'
       },
-      {
-        id: 'analysis-002',
-        timestamp: new Date(now - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-        title: 'Flow Rate Optimization',
-        type: 'manual-entry',
-        status: 'completed',
-        engineer: {
-          id: currentUser.id,
-          name: currentUser.name
-        },
-        results: {
-          pressure_drop: 8.3,
-          flow_rate: 325,
-          temperature: 68.7,
-          recommendation: 'PVC'
-        }
-      },
-      {
-        id: 'analysis-003',
-        timestamp: new Date(now - 1000 * 60 * 60 * 5).toISOString(), // 5 hours ago
-        title: 'Temperature Distribution',
-        type: 'file-upload',
-        status: 'in-progress',
-        engineer: {
-          id: currentUser.id,
-          name: currentUser.name
-        },
-        filename: 'temp_analysis.xlsx'
-      },
-      {
-        id: 'analysis-004',
-        timestamp: new Date(now - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
-        title: 'Fluid Dynamics Simulation',
-        type: 'manual-entry',
-        status: 'failed',
-        engineer: {
-          id: currentUser.id,
-          name: currentUser.name
-        },
-        error: 'Invalid input parameters for viscosity'
-      },
-      {
-        id: 'analysis-005',
-        timestamp: new Date(now - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2 days ago
-        title: 'Multi-phase Flow Analysis',
-        type: 'file-upload',
-        status: 'completed',
-        engineer: {
-          id: currentUser.id,
-          name: currentUser.name
-        },
-        results: {
-          pressure_drop: 15.2,
-          flow_rate: 280,
-          temperature: 82.1,
-          recommendation: 'Stainless Steel'
-        },
-        filename: 'multiphase_data.xlsx'
-      }
+      
+      
     ];
   };
 

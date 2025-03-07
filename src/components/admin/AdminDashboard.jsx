@@ -73,9 +73,9 @@ const AdminDashboard = () => {
   const loadUserStats = () => {
     // For demo purposes, create some mock data
     setUserStats({
-      engineers: { count: 3, active: 2 },
-      designers: { count: 2, active: 1 },
-      totalUsers: 6 // Including admin
+      engineers: { count: 1, active: 1 },
+      designers: { count: 1, active: 1 },
+      totalUsers: 2// Including admin
     });
   };
 
@@ -83,30 +83,7 @@ const AdminDashboard = () => {
   const loadRecentAnalyses = () => {
     // Generate some mock analysis data
     const mockAnalyses = [
-      {
-        id: 'a1',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-        user: { id: 2, name: 'Engineer User', role: 'engineer' },
-        type: 'file-upload',
-        details: 'Uploaded pipeline_data_001.xlsx for analysis',
-        result: 'Success'
-      },
-      {
-        id: 'a2',
-        timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(), // 8 hours ago
-        user: { id: 2, name: 'Engineer User', role: 'engineer' },
-        type: 'manual-entry',
-        details: 'Conducted manual data analysis',
-        result: 'Success'
-      },
-      {
-        id: 'a3',
-        timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-        user: { id: 3, name: 'Designer User', role: 'designer' },
-        type: 'recommendation',
-        details: 'Recommended Cast Iron pipe based on analysis',
-        result: 'Pending approval'
-      }
+     
     ];
     
     setRecentAnalyses(mockAnalyses);
@@ -148,7 +125,7 @@ const AdminDashboard = () => {
   // Function to send email using EmailJS
   // Enter email here
   const handleSendEmail = () => {
-    sendEmail('czaaaa20@gmail.com', 'Admin Notification', 'This is a message to Developer.');
+    sendEmail('21005@email.muscatcollege.edu.om', 'Admin Notification', 'This is a message to Developer.');
   };
 
   return (

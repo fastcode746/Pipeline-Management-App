@@ -33,6 +33,8 @@ import {
 } from '@mui/icons-material';
 import { AuthContext } from '../../contexts/AuthContext';
 import { analyzeManualData } from '../../services/modelService';
+import { Line } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
 const ManualDataEntry = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -306,7 +308,33 @@ const ManualDataEntry = () => {
     setAnalysisResult(null);
     setAnalysisError(null);
   };
-  
+
+  // Prepare data for the chart
+  const chartData = {
+    labels: ["EA(Max)", "EA(Min)", "Accuracy"],
+    datasets: [
+      {
+        label: "Analysis Metrics",
+        data: [
+          analysisResult?.metrics?.EA?.Max || 0,
+          analysisResult?.metrics?.EA?.Min || 0,
+          analysisResult?.metrics?.accuracy || 0
+        ],
+        backgroundColor: ["#42A5F5", "#66BB6A", "#FFA726"],
+        borderWidth: 1
+      }
+    ]
+  };
+
+  const chartOptions = {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
+
   return (
     <Box sx={{ mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 4 }}>
@@ -462,11 +490,15 @@ const ManualDataEntry = () => {
                             <ListItemText
                               primary={key}
                               secondary={
-                                <Typography variant="body2" component="span">
-                                  Min: {value.Min.toFixed(3)} | 
-                                  Avg: {value.Avg.toFixed(3)} | 
-                                  Max: {value.Max.toFixed(3)}
-                                </Typography>
+                                value && value.Min !== undefined && value.Avg !== undefined && value.Max !== undefined ? (
+                                  <Typography variant="body2" component="span">
+                                    Min: {value.Min.toFixed(3)} | 
+                                    Avg: {value.Avg.toFixed(3)} | 
+                                    Max: {value.Max.toFixed(3)}
+                                  </Typography>
+                                ) : (
+                                  'No data available'
+                                )
                               }
                             />
                           </ListItem>
@@ -500,6 +532,20 @@ const ManualDataEntry = () => {
                       <Typography variant="body2" color="text.secondary">
                         Recommendation is based on calculated erosion metrics and operational conditions.
                       </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+
+              {/* Chart for Analysis Results */}
+              <Grid container spacing={3} sx={{ mb: 3 }}>
+                <Grid item xs={12}>
+                  <Card variant="outlined">
+                    <CardContent>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Analysis Metrics Graph
+                      </Typography>
+                      <Line data={chartData} options={chartOptions} />
                     </CardContent>
                   </Card>
                 </Grid>
